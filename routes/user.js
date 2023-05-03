@@ -1,15 +1,30 @@
+const middlewareController = require("../controllers/middlewareController");
 const userController = require("../controllers/userController");
-const {
-  verifyToken,
-  verifyTokenAndAdmin,
-  verifyTokenAndUserAuthorization,
-} = require("../controllers/verifyToken");
-
 const router = require("express").Router();
+// const {
+//   verifyToken,
+//   verifyTokenAndAdmin,
+//   verifyTokenAndUserAuthorization,
+// } = require("../controllers/middlewareController");
+
 //GET ALL USERS
-router.get("/", verifyToken, userController.getAllUsers);
+router.get("/", middlewareController.verifyToken, userController.getAllUsers);
 
 // //DELETE USER
-router.delete("/:id", verifyTokenAndUserAuthorization, userController.deleteUser);
+router.delete("/:id", middlewareController.verifyTokenAndUserAuthorization, userController.deleteUser);
+
+//UPDATE A USER
+router.put(
+  "/:id",
+  middlewareController.verifyTokenAndUserAuthorization,
+  userController.updateUser
+);
+
+//FOLLOW A USER
+router.put(
+  "/:id/follow",
+  middlewareController.verifyToken,
+  userController.followUser
+);
 
 module.exports = router;

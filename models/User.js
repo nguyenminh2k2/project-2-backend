@@ -24,6 +24,31 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    followers: {
+      type: Array,
+      default: [],
+    },
+    followings: {
+      type: Array,
+      default: [],
+    },
+    profilePicture: {
+      type: String,
+      default:
+        "https://preview.redd.it/rrz3hmsxcll71.png?width=640&crop=smart&auto=webp&s=87cc5ed38d8f088ef9fffef7a4c5756b64309d6a",
+    },
+    theme: {
+      type: String,
+      default: "#ff9051",
+    },
+    karmas: {
+      type: Number,
+      default: 0,
+    },
+    favorites: {
+      type: Array,
+      default: [],
+    },
   },
   { timestamps: true }
 );
