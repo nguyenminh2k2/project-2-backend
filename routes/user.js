@@ -13,12 +13,7 @@ router.get("/", middlewareController.verifyToken, userController.getAllUsers);
 // //DELETE USER
 router.delete("/:id", middlewareController.verifyTokenAndUserAuthorization, userController.deleteUser);
 
-//UPDATE A USER
-router.put(
-  "/:id",
-  middlewareController.verifyTokenAndUserAuthorization,
-  userController.updateUser
-);
+
 
 //FOLLOW A USER
 router.put(
