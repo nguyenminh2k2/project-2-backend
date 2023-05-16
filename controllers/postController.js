@@ -43,20 +43,26 @@ const postController = {
 
   //UPDATE A POST
   updatePost: async (req, res) => {
-    try {
-      const post = await Post.findById(req.params.id.trim());
-     
-        await post.updateOne({ $set: req.body });
-        res.status(200).json("Post has been updated");
-      
-    } catch (err) {
-      res.status(500).json(err);
+    if (await checkPermissionModifyPost(req.user.id, req.params.id)) {
+      try {
+        const post = await Post.findById(req.params.id.trim());
+       
+          await post.updateOne({ $set: req.body });
+          res.status(200).json("Post has been updated");
+        
+      } catch (err) {
+        res.status(500).json(err);
+      }
+    } else {
+      res.status(403).json("You're not allowed to do that!");
     }
+
   },
 
   //DELETE A POST
   deletePost: async (req, res) => {
-    try {
+    if (await checkPermissionModifyPost(req.user.id, req.params.id)){
+      try {
       const post = await Post.findById(req.params.id);
       await Post.findByIdAndDelete(req.params.id);
       if (post.cloudinaryId) {
@@ -66,6 +72,8 @@ const postController = {
     } catch (err) {
       res.status(500).json(err);
     }
+    }
+    
   },
 
   //GET ALL POST FROM A USER
@@ -96,7 +104,14 @@ const postController = {
     }catch(err){
       return  res.status(500).json(err);
     }
-  },
-
+  }
 };
+
+
+async function checkPermissionModifyPost (userId, postId) {
+  const post = await Post.findById(postId);
+  // console.log(postId);
+  return post?.userId == userId;
+}
+
 module.exports = postController;

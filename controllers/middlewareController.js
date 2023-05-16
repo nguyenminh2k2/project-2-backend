@@ -32,13 +32,14 @@ const middlewareController = {
   },
 
 
-  verifyTokenAndUserPostAuthorization: (req, res, next) => {
-    middlewareController.verifyToken(req, res, () => {    
-      if (req.user.id === req.body.userId || req.user.isAdmin) {
-        next();
-      } else {
-        return res.status(403).json("You're not allowed to do that!");
-      }
+  verifyTokenAndUserPostAuthorization: (req, res, next) => { 
+    middlewareController.verifyToken(req, res, () => {  
+      next();
+      // if (req.user.id === req.body.userId || req.user.isAdmin) {
+      //   next();
+      // } else {
+      //   return res.status(403).json("You're not allowed to do that!");
+      // }
     });
   },
 
