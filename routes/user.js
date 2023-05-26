@@ -7,6 +7,9 @@ const router = require("express").Router();
 //   verifyTokenAndUserAuthorization,
 // } = require("../controllers/middlewareController");
 
+// GET A USER
+router.get('/:id', userController.getUser);
+
 //GET ALL USERS
 router.get("/", middlewareController.verifyToken, userController.getAllUsers);
 

@@ -72,6 +72,8 @@ const postController = {
     } catch (err) {
       res.status(500).json(err);
     }
+    }else {
+      res.status(403).json("You're not allowed to do that!");
     }
     
   },
@@ -99,7 +101,7 @@ const postController = {
   //GET A POST
   getAPost: async(req,res) => {
     try{
-      const post = await Post.findById(req.params.id);
+      const post = await Post.findById(req.params.id); 
       res.status(200).json(post);
     }catch(err){
       return  res.status(500).json(err);

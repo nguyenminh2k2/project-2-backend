@@ -32,6 +32,9 @@ const postSchema = new mongoose.Schema(
       required: true,
       minlength: 4,
     },
+    image:{
+      type: String,
+    },
     tags: {
       type: Number,
       required: true,

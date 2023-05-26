@@ -8,6 +8,9 @@ const app = express();
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const postRoute = require("./routes/post");
+const fileRoute = require("./routes/file");
+const chatRoute = require("./routes/chat");
+const messageRoute = require("./routes/message");
 dotenv.config();
 
 
@@ -34,6 +37,9 @@ app.get("/v1/", (req,res)=>{
 app.use("/v1/auth", authRoute);
 app.use("/v1/user", userRoute);
 app.use("/v1/post", postRoute);
+app.use("/v1/file", fileRoute);
+app.use("/v1/chat", chatRoute);
+app.use("/v1/message", messageRoute);
 
 app.listen(8000, () => {
     console.log("Server is running");
