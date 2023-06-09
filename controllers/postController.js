@@ -7,7 +7,6 @@ const postController = {
   createPost: async (req, res) => {
     try {
       const users = await User.findById(req.user.id);
-      
       if (req.body.imageUrl) {
         const result = await cloudinary.uploader.upload(req.body.imageUrl, {
           upload_preset: "post_image",
@@ -79,7 +78,7 @@ const postController = {
   },
 
   //GET ALL POST FROM A USER
-  getPostsFromOne: async (req, res) => {
+  getPostsFromOne: async (req, res) => { 
     try {
       const post = await Post.find({ userId: req.params.id });
       res.status(200).json(post);

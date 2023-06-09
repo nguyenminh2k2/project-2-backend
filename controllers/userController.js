@@ -6,6 +6,19 @@ const bcrypt = require("bcrypt");
 const authController = require("./authController");
 
 const userController = {
+//Get all user from a chat
+getUserFromOneChat: async (req,res) => {
+  try{
+      const user = await User.find({ ChatId: req.params.id });
+      res.status(200).json(user);
+  }
+  catch{
+      res.status(500).json(err);
+  }
+  
+
+},
+
   // Get a User
 getUser : async (req, res) => {
   const id = req.params.id;
@@ -22,7 +35,7 @@ getUser : async (req, res) => {
     } catch (error) {
       res.status(500).json(error);
     }
-  },
+},
 
   //GET ALL USER
   getAllUsers: async (req, res) => {

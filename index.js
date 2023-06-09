@@ -11,6 +11,7 @@ const postRoute = require("./routes/post");
 const fileRoute = require("./routes/file");
 const chatRoute = require("./routes/chat");
 const messageRoute = require("./routes/message");
+const groupRoute = require("./routes/group");
 dotenv.config();
 
 
@@ -40,6 +41,7 @@ app.use("/v1/post", postRoute);
 app.use("/v1/file", fileRoute);
 app.use("/v1/chat", chatRoute);
 app.use("/v1/message", messageRoute);
+app.use("/v1/group", groupRoute);
 
 app.listen(8000, () => {
     console.log("Server is running");
