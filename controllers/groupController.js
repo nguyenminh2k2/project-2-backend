@@ -5,10 +5,11 @@ const groupController =  {
     createGroup: async (req, res) => {
         try {
             const users = await User.findById(req.user.id);
+            const members = [...new Set([users.id, ...req.body.members])];
             const makeGroup = {
                 ...req.body,
                 createId: users.id,
-                members: [users.id, ...req.body.members], 
+                members 
             };
             const newGroup = new Group(makeGroup);
             const result = await newGroup.save();
@@ -55,7 +56,7 @@ const groupController =  {
         } catch (err) {
           res.status(500).json(`ERROR: ${err}`);
         }
-      },
+    },
       
 
     removerMember: async (req, res) => {
