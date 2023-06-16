@@ -18,6 +18,9 @@ router.put("/:groupId", middlewareController.verifyTokenAndUserPostAuthorization
 //delete group
 router.delete("/:groupId", middlewareController.verifyTokenAndUserPostAuthorization, groupController.daleteGroup);
 
+//get members
+router.get('/members/:groupId', groupController.getMembers);
+
 // remove members
 router.put("/remove/:groupId", middlewareController.verifyTokenAndUserPostAuthorization, groupController.removerMember);
 

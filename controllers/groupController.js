@@ -3,9 +3,22 @@ const User = require("../models/User");
 
 const groupController =  {
     createGroup: async (req, res) => {
+        const users = await User.findById(req.user.id);
+        const currentUser = users.id;
+        const memberUsernames = req.body.members;
         try {
-            const users = await User.findById(req.user.id);
-            const members = [...new Set([users.id, ...req.body.members])];
+            const members = []; // Danh sách thành viên cuối cùng
+            const memberIds = []; // Mảng tạm thời để lưu ID của thành viên duy nhất
+        
+            for (const username of memberUsernames) {
+              if (username !== users.username) {
+                const user = await User.findOne({ username }); // Tìm kiếm người dùng dựa trên tên người dùng
+                if (user && !memberIds.includes(user.id)) {
+                  memberIds.push(user.id); // Thêm ID người dùng vào mảng tạm thời nếu chưa tồn tại
+                }
+              }
+            }      
+            members.push(currentUser, ...memberIds);
             const makeGroup = {
                 ...req.body,
                 createId: users.id,
@@ -57,6 +70,24 @@ const groupController =  {
           res.status(500).json(`ERROR: ${err}`);
         }
     },
+
+    getMembers: async (req, res) => {
+        try {
+          const groupId = req.params.groupId; // Lấy groupId từ tham số của API (hoặc thông qua req.body, req.query tùy vào cách bạn thiết kế API)
+          const group = await Group.findById(groupId).select('members'); // Tìm chat dựa trên groupId và chỉ lấy trường 'members' (chứa các ID của thành viên)
+          
+          if (!group) {
+            return res.status(404).json({ error: 'Chat not found' });
+          }
+      
+          const memberIds = group.members; // Lấy danh sách ID của thành viên từ chat
+          const members = await User.find({ _id: { $in: memberIds } }).select('id username'); // Truy vấn thông tin người dùng dựa trên các ID
+      
+          res.status(200).json({ members });
+        } catch (error) {
+          res.status(500).json(`ERROR: ${err}`);
+        }
+    },
       
 
     removerMember: async (req, res) => {
@@ -64,7 +95,15 @@ const groupController =  {
             const membersToRemove = req.body.membersToRemove;// Mảng chứa ID của thành viên cần xóa
             try{
                 const group = await Group.findById(req.params.groupId);
-                group.members = group.members.filter(member => !membersToRemove.includes(member));
+                const updatedMembers = [];
+                for (const memberId of group.members) {
+                  const member = await User.findById(memberId);
+                  if (!membersToRemove.includes(member.username)) {
+                    updatedMembers.push(memberId);
+                  }
+                }
+          
+                group.members = updatedMembers;
                 await group.save();
 
                 res.status(200).json("Remove member successfully!");
@@ -81,7 +120,15 @@ const groupController =  {
             const membersToAdd = req.body.membersToAdd;// Mảng chứa ID của thành viên cần xóa
             try{
                 const group = await Group.findById(req.params.groupId);
-                group.members = [...new Set([...group.members, ...membersToAdd])];
+                const existingMembers = new Set(group.members); // Sử dụng Set để lưu trữ các thành viên hiện có
+    
+                for (const username of membersToAdd) {
+                  const user = await User.findOne({ username });
+                  if (user && !existingMembers.has(user.id)) {
+                    group.members.push(user.id); // Thêm ID người dùng vào danh sách thành viên nếu chưa tồn tại
+                    existingMembers.add(user.id); // Cập nhật Set với ID người dùng đã được thêm
+                  }
+                }
                 await group.save();
 
                 res.status(200).json("Add member successfully!");
@@ -96,7 +143,6 @@ const groupController =  {
     daleteGroup: async (req, res) => {
         if (await checkPermissionModifyGroup(req.user.id, req.params.groupId)){
             try{
-                // const group = await Group.findById(req.params.groupId);
                 await Group.findByIdAndDelete(req.params.groupId);
                 res.status(200).json("Delete group succesfully");
             }
