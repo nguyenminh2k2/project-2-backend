@@ -54,6 +54,18 @@ const groupController =  {
         }
     },
 
+    userGroups: async (req, res) => {
+      try{
+        const group = await Group.find({
+          members: {$in: [req.params.userId]}
+        });
+        res.status(200).json(group);
+      }
+      catch(error){
+        res.status(500).json(`ERROR: ${error}`)
+      }
+    },
+
     updateGroup: async (req, res) => {
         try {
           if (await checkPermissionModifyGroup(req.user.id, req.params.groupId)) {
@@ -85,7 +97,7 @@ const groupController =  {
       
           res.status(200).json({ members });
         } catch (error) {
-          res.status(500).json(`ERROR: ${err}`);
+          res.status(500).json(`ERROR: ${error}`);
         }
     },
       

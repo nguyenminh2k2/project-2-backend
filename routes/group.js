@@ -12,6 +12,9 @@ router.get("/allGroup", groupController.getAllGroup);
 //get a Group
 router.get("/aGroup/:groupId", groupController.getAGroup);
 
+// Get groups from user
+router.get("/:userId", groupController.userGroups);
+
 //update group
 router.put("/:groupId", middlewareController.verifyTokenAndUserPostAuthorization, groupController.updateGroup);
 
