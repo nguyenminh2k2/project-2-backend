@@ -129,7 +129,7 @@ const groupController =  {
 
     addMember: async (req, res) => {
         if (await checkMemberFromGroup(req.user.id, req.params.groupId)) {
-            const membersToAdd = req.body.membersToAdd;// Mảng chứa ID của thành viên cần xóa
+            const membersToAdd = req.body.membersToAdd;// Mảng chứa ID của thành viên cần thêm
             try{
                 const group = await Group.findById(req.params.groupId);
                 const existingMembers = new Set(group.members); // Sử dụng Set để lưu trữ các thành viên hiện có

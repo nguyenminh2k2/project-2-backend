@@ -1,41 +1,37 @@
 const User = require("../models/User");
-// const Post = require("../models/Post");
-// const Comment = require("../models/Comment");
-// const Message = require("../models/Message");
 const bcrypt = require("bcrypt");
 const authController = require("./authController");
 
 const userController = {
+
 //Get all user from a chat
-getUserFromOneChat: async (req,res) => {
-  try{
-      const user = await User.find({ ChatId: req.params.id });
-      res.status(200).json(user);
-  }
-  catch{
-      res.status(500).json(err);
-  }
-  
-
-},
-
-  // Get a User
-getUser : async (req, res) => {
-  const id = req.params.id;
-
-  try {
-    const user = await User.findById(id);
-    if (user) {
-      const { password, ...otherDetails } = user._doc;
-
-      res.status(200).json(otherDetails);
-    } else {
-      res.status(404).json("No such User");
+  getUserFromOneChat: async (req,res) => {
+    try{
+        const user = await User.find({ ChatId: req.params.id });
+        res.status(200).json(user);
     }
-    } catch (error) {
-      res.status(500).json(error);
+    catch{
+        res.status(500).json(err);
     }
-},
+  },
+
+    // Get a User
+  getUser : async (req, res) => {
+    const id = req.params.id;
+
+    try {
+      const user = await User.findById(id);
+      if (user) {
+        const { password, ...otherDetails } = user._doc;
+
+        res.status(200).json(otherDetails);
+      } else {
+        res.status(404).json("No such User");
+      }
+      } catch (error) {
+        res.status(500).json(error);
+      }
+  },
 
   //GET ALL USER
   getAllUsers: async (req, res) => {
@@ -98,6 +94,36 @@ getUser : async (req, res) => {
       }
     } else {
       return res.status(403).json("You can't follow yourself");
+    }
+  },
+
+  //get followers
+  getFollowers: async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const user = await User.findById(userId).select('followers');
+  
+      const followerIds = user.followers;
+      const followers = await User.find({ _id: { $in: followerIds } }).select('id username');
+  
+      return res.status(200).json({ followers });
+    } catch (error) {
+      res.status(500).json(`ERROR: ${error}`);
+    }
+  },
+  
+  //get followings
+  getFollowings: async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const user = await User.findById(userId).select('followings');
+  
+      const followingIds = user.followings;
+      const followings = await User.find({ _id: { $in: followingIds } }).select('id username');
+  
+      return res.status(200).json({ followings });
+    } catch (error) {
+      res.status(500).json(`ERROR: ${error}`);
     }
   },
 };
