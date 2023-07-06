@@ -104,7 +104,7 @@ const userController = {
       const user = await User.findById(userId).select('followers');
   
       const followerIds = user.followers;
-      const followers = await User.find({ _id: { $in: followerIds } }).select('id username');
+      const followers = await User.find({ _id: { $in: followerIds } }).select('id username profilePicture');
   
       return res.status(200).json({ followers });
     } catch (error) {
@@ -119,7 +119,7 @@ const userController = {
       const user = await User.findById(userId).select('followings');
   
       const followingIds = user.followings;
-      const followings = await User.find({ _id: { $in: followingIds } }).select('id username');
+      const followings = await User.find({ _id: { $in: followingIds } }).select('id username profilePicture');
   
       return res.status(200).json({ followings });
     } catch (error) {
