@@ -19,6 +19,11 @@ const groupController =  {
               }
             }      
             members.push(currentUser, ...memberIds);
+
+            if (members.length <= 1){
+              return res.status(404).json("member > 1");
+            }
+
             const makeGroup = {
                 ...req.body,
                 createId: users.id,
@@ -224,7 +229,7 @@ const groupController =  {
             try{
                 const group = await Group.findById(groupId);
                 
-                const requestId = req.body.requestId; // ID của yêu cầu cần phê duyệt
+                const requestId = req.params.requestId; // ID của yêu cầu cần phê duyệt
                 const index = group.pendingMembers.indexOf(requestId);
 
                 if (index === -1) {
@@ -247,9 +252,56 @@ const groupController =  {
         }else {
             res.status(403).json("You're not the admin of this group");
         }
-    }
-      
+    },
+
+    refuseRequest: async (req, res) => {
+      const userId = req.user.id;
+      const groupId = req.params.groupId;
+      if(await checkPermissionModifyGroup(userId, groupId)) {
+          try{
+              const group = await Group.findById(groupId);
+              
+              const requestId = req.params.requestId; // ID của yêu cầu cần phê duyệt
+              const index = group.pendingMembers.indexOf(requestId);
+
+              if (index === -1) {
+                  return res.status(404).json("Request not found");
+              }
+
+              // Xóa yêu cầu từ danh sách pendingMembers
+              group.pendingMembers.splice(index, 1);
+
+              await group.save();
+
+              return res.status(200).json("Request approved successfully");
+          }
+          catch (err) {
+              return res.status(500).json(`ERROR: ${err}`);
+          }
+      }else {
+          res.status(403).json("You're not the admin of this group");
+      }
+  },
+
+    // get members đang chờ duyệt
+    getPendingMembers: async (req, res) => {
+      try {
+        const groupId = req.params.groupId; 
+        const group = await Group.findById(groupId).select('pendingMembers'); 
+        
+        if (!group) {
+          return res.status(404).json({ error: 'Chat not found' });
+        }
     
+        const memberIds = group.pendingMembers; 
+        const members = await User.find({ _id: { $in: memberIds } }).select('id username'); 
+    
+        res.status(200).json({ members });
+      } catch (error) {
+        res.status(500).json(`ERROR: ${error}`);
+      }
+    },
+      
 };
 
 // Check admin

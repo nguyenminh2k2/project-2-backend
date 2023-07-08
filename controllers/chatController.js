@@ -94,7 +94,7 @@ const chatController = {
         }
     
         const memberIds = chat.members; // Lấy danh sách ID của thành viên từ chat
-        const members = await User.find({ _id: { $in: memberIds } }).select('id username'); // Truy vấn thông tin người dùng dựa trên các ID
+        const members = await User.find({ _id: { $in: memberIds } }).select('id username profilePicture'); // Truy vấn thông tin người dùng dựa trên các ID
     
         res.status(200).json({ members });
       } catch (error) {
