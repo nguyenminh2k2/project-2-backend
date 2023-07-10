@@ -6,7 +6,7 @@ router.post("/chatroom",middlewareController.verifyToken, chatController.createC
 
 router.put("/:chatId",middlewareController.verifyTokenAndUserPostAuthorization, chatController.updateChatRoom);
 
-router.post("/", middlewareController.verifyToken, chatController.createChat);
+router.post("/:memberId2", middlewareController.verifyToken, chatController.createChat);
 
 router.get("/:userId", chatController.userChats);
 

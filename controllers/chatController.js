@@ -7,7 +7,7 @@ const chatController = {
     createChat : async (req, res) =>{
         const users = await User.findById(req.user.id);
         const memberId1 = users.id;
-        const memberId2 = req.body.member;
+        const memberId2 = req.params.member;
           // Kiểm tra xem phòng chat với hai thành viên đã tồn tại hay chưa
         const existingChat = await ChatModel.findOne({
           members: { $all: [memberId1, memberId2], $size: 2 } 
