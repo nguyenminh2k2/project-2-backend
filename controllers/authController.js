@@ -120,7 +120,7 @@ const authController = {
     //Clear cookies when user logs out
     refreshTokens = refreshTokens.filter((token) => token !== req.body.token);
     res.clearCookie("refreshToken");
-    res.status(200).json("Logged out successfully!");
+    return res.status(200).json("Logged out successfully!");
   },
 
 };

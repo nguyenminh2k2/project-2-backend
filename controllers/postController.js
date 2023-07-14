@@ -36,7 +36,7 @@ const postController = {
         return res.status(200).json(savedPost);
       }
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -101,7 +101,7 @@ const postController = {
   getAPost: async(req,res) => {
     try{
       const post = await Post.findById(req.params.id); 
-      res.status(200).json(post);
+      return res.status(200).json(post);
     }catch(err){
       return  res.status(500).json(err);
     }

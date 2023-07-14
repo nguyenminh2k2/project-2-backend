@@ -26,10 +26,10 @@ const userController = {
 
         res.status(200).json(otherDetails);
       } else {
-        res.status(404).json("No such User");
+        return res.status(404).json("No such User");
       }
       } catch (error) {
-        res.status(500).json(error);
+        return res.status(500).json(error);
       }
   },
 
@@ -37,9 +37,9 @@ const userController = {
   getAllUsers: async (req, res) => {
     try {
       const user = await User.find({}, { password: 0 });
-      res.status(200).json(user);
+      return res.status(200).json(user);
     } catch (err) {
-      res.status(500).json(err);
+      return res.status(500).json(err);
     }
   },
 
@@ -108,12 +108,12 @@ const userController = {
   
       return res.status(200).json({ followers });
     } catch (error) {
-      res.status(500).json(`ERROR: ${error}`);
+      return res.status(500).json(`ERROR: ${error}`);
     }
   },
   
-  //get followings
-  getFollowings: async (req, res) => {
+  //get followings 
+  getFollowings: async (req, res) => {  
     try {
       const userId = req.params.userId;
       const user = await User.findById(userId).select('followings');
@@ -121,9 +121,9 @@ const userController = {
       const followingIds = user.followings;
       const followings = await User.find({ _id: { $in: followingIds } }).select('id username profilePicture');
   
-      return res.status(200).json({ followings });
+      return res.status(200).json({ followings }); 
     } catch (error) {
-      res.status(500).json(`ERROR: ${error}`);
+      return res.status(500).json(`ERROR: ${error}`);
     }
   },
 };
